@@ -1,0 +1,197 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+void mergeSortl(int*, int, int);
+void mergeSortRec(int*, int, int);
+
+void MergeSort(int*, int, int);
+void Merge(int*, int, int);
+
+
+int main()
+{
+  int *arr, i; 
+  ifstream in ("File.txt");
+
+  setlocale(LC_ALL, "PUS"); 
+
+  for (int i = 0; i < 10; i++)
+  { 
+    in >> arr[i];
+  }
+  in.close();
+
+  cout<< "Ваш массив: ";
+  for (int i = 0; i < 10; i++)
+  {
+    cout << arr[i] << " ";
+  }
+
+// Сортировка естественным слиянием
+  cout<<'\n'<<"Сортировка естественным слиянием: ";
+
+  mergeSortl(arr, 10, 0);  
+  
+  for (int i = 0; i < 10; i++)
+  {
+    cout << arr[i] << " ";
+  }
+  cout<<'\n';
+//
+
+// Cортировка сбалансированным слиянием
+  int  n;
+  int* A = new int[100];
+  n=10;
+  ifstream inp ("File.txt");
+
+  for (i = 0; i < n; i++)
+  {
+    inp>> A[i];
+  }
+  inp.close();
+
+  MergeSort(A, 0, n - 1);
+  cout << "Cортировка сбалансированным слиянием: ";
+  for (i = 0; i < n; i++) cout << A[i] << " ";
+  delete[]A;
+  cout<<'\n';
+//
+
+// Сортировка многофазным слиянием
+  int* b=new int[100];
+
+  ifstream inpu("File.txt");
+  for (i = 0; i < n; i++) inpu>> b[i];
+  inpu.close();
+
+  MergeSort(b, 0, n - 1);
+  cout << "Сортировка многофазным слиянием: ";
+  for (i = 0; i < n; i++) cout << b[i] << " ";
+  delete[]b;
+//
+}
+
+// 1
+void mergeSortl(int* v, int r, int i)
+{
+  if (i<r)
+  {
+  mergeSortRec(v, r, i);
+  mergeSortl(v, r, i + 1);
+  }
+}
+
+void mergeSortRec(int* v, int r, int t)
+{
+  int p = 1;
+  int k = 1;
+  int i = 0;
+  int num;
+  bool flag = false; 
+
+  while (v[i] <= v[i + 1] && i < r - 1)
+  {
+    p++;
+    i++;
+  }
+
+  if (v[i] > v[i + 1] && i < r - 1)
+  {
+    i++;
+    flag = true;
+    while (v[i] <= v[i + 1] && i < r - 1)
+    {
+      k++;
+      i++;
+    }
+  }  
+
+  num = i+1;
+  int* a = new int[p];
+  int* b = new int[k];
+
+  for (i = 0; i <p; i++)
+  {
+    a[i] = v[i];
+  }
+
+  int g = 0; 
+  if (flag == true)
+  {
+    for (i = p; i < p+k; i++)
+    {
+      b[g] = v[i];
+      g++;
+    }
+  }
+
+int j=0; 
+int l=0;
+
+if (flag == true)
+{
+  for (i = 0; i < num; i++)
+  {
+    if ((a[l] < b[j] || j>=k) && l < p)
+    {
+      v[i] = a[l];
+      l++;
+    }
+    else
+    if ((a[l] > b[j] || l >- p)&& j<k)
+    {
+      v[i] = b[j];
+      j++;
+    }
+    else
+    if (a[l] == b[j] && j < k && l < p)
+    {
+      v[i] = a[l]; 
+      v[i+l] = b[j];
+      l++;
+      j++;
+      i++;
+    }
+  }
+}
+
+delete[] a; 
+delete[] b;
+}
+
+// 2 
+void MergeSort(int* A, int first, int last)
+{
+  if (first < last)
+  {
+  MergeSort(A, first, (first + last) / 2);
+  MergeSort(A, (first + last) /2 + 1, last); 
+  Merge(A, first, last); 
+  }
+}
+
+void Merge(int* A, int first, int last)
+{
+  int middle, start, final, j; 
+  int* mas = new int[100];
+  middle = (first + last) / 2;
+  start = first;
+  final = middle + 1;
+
+  for (j = first; j <= last; j++)
+    if ((start <= middle) && ((final > last) || (A[start] < A[final])))
+    {
+      mas[j] = A[start]; start++;
+    }
+    else
+    {
+      mas[j] = A[final];
+      final++;
+    }
+
+  for (j = first; j <= last; j++) A[j] = mas[j]; 
+  delete[]mas;
+}
+ 
